@@ -1,0 +1,26 @@
+{
+  "name": "mapty",
+  "version": "1.0.0",
+  "description": "This is my adaptation of Jonas Schmedtmann's Mapty app. Map your hikes and highlights!",
+  "scripts": {
+    "dev": "parcel index.html",
+    "build": "rmdir build /s /q && parcel build index.html --dist-dir ./build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LauwiMeara/Mapty.git"
+  },
+  "author": "Laura Groenhuijzen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LauwiMeara/Mapty/issues"
+  },
+  "homepage": "https://github.com/LauwiMeara/Maptyreadme",
+  "dependencies": {
+    "core-js": "^3.12.1",
+    "leaflet": "^1.7.1"
+  },
+  "devDependencies": {
+    "parcel": "^2.0.0-beta.2"
+  }
+}

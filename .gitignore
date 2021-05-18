@@ -1,3 +1,11 @@
+### npm ###
+node_modules
+
+### Parcel ###
+build
+dist
+.parcel-cache
+
 ### VisualStudioCode ###
 .vscode/*
 !.vscode/settings.json
@@ -10,3 +18,4 @@
 # Ignore all local history of files
 .history
 .ionide
+
