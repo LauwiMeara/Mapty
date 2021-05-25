@@ -1,12 +1,12 @@
 'use strict';
 
 class Activity {
-  date = new Date();
+  #date = new Date();
   // prettier-ignore
-  months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+  #months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
   dateString = `${
-    this.months[this.date.getMonth()]
-  } ${this.date.getDate()}, ${this.date.getFullYear()}`;
+    this.#months[this.#date.getMonth()]
+  } ${this.#date.getDate()}, ${this.#date.getFullYear()}`;
   id = String(Date.now()).slice(-10);
 
   constructor(coords) {

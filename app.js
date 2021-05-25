@@ -16,18 +16,18 @@ const inputDuration = document.querySelector('.form__input--duration');
 /////////////////////////
 // App
 export class App {
-  map;
-  mapEvent;
-  zoom = 13;
-  activities = [];
-  activityTypes = {
+  #map;
+  #mapEvent;
+  #zoom = 13;
+  #activities = [];
+  #activityTypes = {
     hiking: 'Hiking',
     highlight: 'Highlight',
   };
-  selectedType = (inputType.value = this.activityTypes.hiking.toLowerCase());
-  markers = {};
+  #selectedType = (inputType.value = this.#activityTypes.hiking.toLowerCase());
+  #markers = {};
 
-  coordsAmsterdam = [52.3546448, 4.8337495];
+  #coordsAmsterdam = [52.3546448, 4.8337495];
 
   constructor() {
     this._getPosition();
@@ -36,13 +36,8 @@ export class App {
 
     form.addEventListener('submit', this._createActivity.bind(this));
     inputType.addEventListener('change', this._changeType.bind(this));
-    containerActivities.addEventListener(
-      'mouseover',
-      this._toggleActivityOpacity
-    );
-    containerActivities.addEventListener(
-      'mouseout',
-      this._toggleActivityOpacity
+    ['mouseover', 'mouseout'].forEach(event =>
+      containerActivities.addEventListener(event, this._toggleActivityOpacity)
     );
     containerActivities.addEventListener(
       'click',
@@ -51,31 +46,31 @@ export class App {
   }
 
   _addTypeOptions() {
-    for (const key of Object.keys(this.activityTypes)) {
+    for (const key of Object.keys(this.#activityTypes)) {
       const option = document.createElement('option');
       option.value = key;
-      option.text = this.activityTypes[key];
+      option.text = this.#activityTypes[key];
       inputType.add(option);
     }
   }
 
   _changeType() {
-    this.selectedType = inputType.value;
+    this.#selectedType = inputType.value;
 
     const showElement = element =>
       element.closest('.form__row').classList.remove('form__row--hidden');
     const hideElement = element =>
       element.closest('.form__row').classList.add('form__row--hidden');
 
-    switch (this.selectedType) {
-      case this.activityTypes.hiking.toLowerCase():
+    switch (this.#selectedType) {
+      case this.#activityTypes.hiking.toLowerCase():
         showElement(inputHikingTrail);
         showElement(inputDistance);
         showElement(inputDuration);
         hideElement(inputDescription);
         inputHikingTrail.focus();
         break;
-      case this.activityTypes.highlight.toLowerCase():
+      case this.#activityTypes.highlight.toLowerCase():
         hideElement(inputHikingTrail);
         hideElement(inputDistance);
         hideElement(inputDuration);
@@ -97,8 +92,8 @@ export class App {
 
     let activity;
 
-    switch (this.selectedType) {
-      case this.activityTypes.hiking.toLowerCase():
+    switch (this.#selectedType) {
+      case this.#activityTypes.hiking.toLowerCase():
         const hikingTrail = inputHikingTrail.value;
         const distance = Number(inputDistance.value);
         const duration = Number(inputDuration.value);
@@ -110,33 +105,33 @@ export class App {
           return alert('Check the distance and duration');
 
         activity = new Hiking(
-          this.mapEvent.latlng,
+          this.#mapEvent.latlng,
           hikingTrail,
           distance,
           duration
         );
         break;
-      case this.activityTypes.highlight.toLowerCase():
+      case this.#activityTypes.highlight.toLowerCase():
         const description = inputDescription.value;
 
         if (!validStrings(description)) return alert('Describe the highlight');
 
-        activity = new Highlight(this.mapEvent.latlng, description);
+        activity = new Highlight(this.#mapEvent.latlng, description);
         break;
       default:
         alert('Select an activity type');
         break;
     }
 
-    this.activities.push(activity);
+    this.#activities.push(activity);
     this._displayMarker(activity);
     this._displayActivity(activity);
     this._hideForm();
     this._setLocalStorage();
   }
 
-  _createMap(coords = this.coordsAmsterdam) {
-    this.map = L.map('map').setView(coords, this.zoom);
+  _createMap(coords = this.#coordsAmsterdam) {
+    this.#map = L.map('map').setView(coords, this.#zoom);
 
     L.tileLayer(
       'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png',
@@ -144,10 +139,10 @@ export class App {
         attribution:
           '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       }
-    ).addTo(this.map);
+    ).addTo(this.#map);
 
-    this.map.on('click', this._showForm.bind(this));
-    this.activities.forEach(a => this._displayMarker(a));
+    this.#map.on('click', this._showForm.bind(this));
+    this.#activities.forEach(a => this._displayMarker(a));
   }
 
   _deleteActivity(e) {
@@ -155,15 +150,15 @@ export class App {
 
     if (confirm('Do you want to delete the activity?')) {
       const id = clickedActivity.dataset.id;
-      this.activities.forEach(a => {
+      this.#activities.forEach(a => {
         if (a.id === id) {
           // Delete from displayed list
           clickedActivity.remove();
           // Delete from map
-          const marker = this.markers[id];
-          this.map.removeLayer(marker);
+          const marker = this.#markers[id];
+          this.#map.removeLayer(marker);
           // Delete from array
-          this.activities = this.activities.filter(activity => {
+          this.#activities = this.#activities.filter(activity => {
             return activity !== a;
           });
           // Delete from local storage
@@ -191,7 +186,7 @@ export class App {
             </div>`;
 
     switch (activity.type) {
-      case this.activityTypes.hiking.toLowerCase():
+      case this.#activityTypes.hiking.toLowerCase():
         html += `
             <div class="activity__details">
               <span class="activity__icon">🥾</span>
@@ -212,7 +207,7 @@ export class App {
             </div>
           </li>`;
         break;
-      case this.activityTypes.highlight.toLowerCase():
+      case this.#activityTypes.highlight.toLowerCase():
         break;
       default:
         alert('Select an activity type');
@@ -251,11 +246,11 @@ export class App {
     let emoji;
 
     switch (activity.type) {
-      case this.activityTypes.hiking.toLowerCase():
+      case this.#activityTypes.hiking.toLowerCase():
         icon = hikingIcon;
         emoji = `${activity.speed <= 5.5 ? '🚶‍♂️' : '🏃‍♂️'}`;
         break;
-      case this.activityTypes.highlight.toLowerCase():
+      case this.#activityTypes.highlight.toLowerCase():
         icon = highlightIcon;
         emoji = '🔆';
         break;
@@ -265,7 +260,7 @@ export class App {
     }
 
     const marker = L.marker(activity.coords, { icon: icon })
-      .addTo(this.map)
+      .addTo(this.#map)
       .bindPopup(
         L.popup({
           maxWidth: 250,
@@ -278,17 +273,17 @@ export class App {
       .setPopupContent(`${emoji} ${this._getDisplayedField(activity)}`)
       .openPopup();
 
-    this.markers[activity.id] = marker;
+    this.#markers[activity.id] = marker;
   }
 
   _getDisplayedField(activity) {
     let displayedField;
 
     switch (activity.type) {
-      case this.activityTypes.hiking.toLowerCase():
+      case this.#activityTypes.hiking.toLowerCase():
         displayedField = activity.hikingTrail;
         break;
-      case this.activityTypes.highlight.toLowerCase():
+      case this.#activityTypes.highlight.toLowerCase():
         displayedField = activity.description;
         break;
       default:
@@ -304,8 +299,8 @@ export class App {
 
     if (!data) return;
 
-    this.activities = data;
-    this.activities.forEach(a => this._displayActivity(a));
+    this.#activities = data;
+    this.#activities.forEach(a => this._displayActivity(a));
   }
 
   _getPosition() {
@@ -344,13 +339,13 @@ export class App {
 
     if (!clickedElement) return;
 
-    const activity = this.activities.find(
+    const activity = this.#activities.find(
       a => a.id === clickedElement.dataset.id
     );
 
     if (!activity) return;
 
-    this.map.setView(activity.coords, this.zoom, {
+    this.#map.setView(activity.coords, this.#zoom, {
       animate: true,
       pan: {
         duration: 1,
@@ -359,11 +354,11 @@ export class App {
   }
 
   _setLocalStorage() {
-    localStorage.setItem('activities', JSON.stringify(this.activities));
+    localStorage.setItem('activities', JSON.stringify(this.#activities));
   }
 
   _showForm(e) {
-    this.mapEvent = e;
+    this.#mapEvent = e;
     form.classList.remove('hidden');
     inputHikingTrail.focus();
   }
