@@ -4,7 +4,7 @@
   "description": "This is my adaptation of Jonas Schmedtmann's Mapty app. Map your hikes and highlights!",
   "scripts": {
     "dev": "parcel index.html",
-    "build": "rmdir build /s /q && parcel build index.html --dist-dir ./build"
+    "build": "rmdir build /s /q && parcel build index.html --public-url /Mapty --dist-dir ./build"
   },
   "repository": {
     "type": "git",
